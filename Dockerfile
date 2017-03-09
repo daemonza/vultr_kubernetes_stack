@@ -1,30 +1,33 @@
 FROM centos:latest
 MAINTAINER Werner Gillmer <werner.gillmer@gmail.com>
 
-# give more information for salt
-RUN yum install virt-what -y
-# kubectl
-RUN yum install kubernetes-client -y
-RUN yum install golang -y
-RUN yum install git -y
+# install saltstack
+# based on https://repo.saltstack.com/#rhel
+RUN yum update -y && yum install https://repo.saltstack.com/yum/redhat/salt-repo-latest-1.el7.noarch.rpm -y && \
+    yum clean expire-cache -y && \
+    yum	install virt-what \
+        install salt-master \ 
+	install salt-minion \
+	install salt-ssh \
+	install salt-syndic \ 
+	install salt-cloud \
+	install salt-api -y
+
+# install tools 
+RUN yum install kubernetes-client \ 
+	install golang \ 
+	install git -y
 
 RUN mkdir -p /opt/go
 ENV GOPATH /opt/go
-
-# setup salt master
-RUN curl -o /opt/bootstrap-salt.sh -L https://bootstrap.saltstack.com
-# only install master, not minion, with salt-cloud and don't auto start after install
-RUN /bin/sh /opt/bootstrap-salt.sh -X -L -M -N -P
 
 # useful vultr commmand line tool 
 RUN go get github.com/JamesClonk/vultr
 RUN ln -s /opt/go/bin/vultr /usr/bin/vultr
 
 
-# TODO
 # map volumes
-
-VOLUME ['/etc/salt', '/var/cache/salt', '/var/logs/salt', '/srv/salt']
+VOLUME ['/etc/salt', '/var/cache/salt', '/var/log/salt']
 EXPOSE 4505 4506 
 
-CMD /usr/bin/salt-master -l info 
+CMD /usr/bin/salt-master -l debug 
