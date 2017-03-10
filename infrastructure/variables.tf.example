@@ -1,0 +1,5 @@
+# To get your vultr key, loging on https://vultr.com, expand the
+# menu under your name and click on API.
+variable "vultr_api_key" {
+	default = "PUT YOUR VULTR API KEY HERE"
+}
