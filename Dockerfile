@@ -27,7 +27,7 @@ RUN ln -s /opt/go/bin/vultr /usr/bin/vultr
 
 
 # map volumes
-VOLUME ['/etc/salt', '/var/cache/salt', '/var/log/salt']
+# VOLUME ['/etc/salt/', '/var/cache/salt', '/var/log/salt']
 EXPOSE 4505 4506 
 
 CMD /usr/bin/salt-master -l debug 
